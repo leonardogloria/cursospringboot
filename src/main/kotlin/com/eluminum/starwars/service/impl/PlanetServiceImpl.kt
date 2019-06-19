@@ -3,8 +3,10 @@ package com.eluminum.starwars.service.impl
 import com.eluminum.starwars.model.Planet
 import com.eluminum.starwars.service.PlanetService
 import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
+@Component
 class PlanetServiceImpl: PlanetService {
     companion object {
         val initialPlanets = arrayOf(
@@ -32,6 +34,6 @@ class PlanetServiceImpl: PlanetService {
     override fun search(nameFilter: String): List<Planet> {
         return planets.filter { it.value.name.contains(nameFilter,ignoreCase = true) }.map(Map.Entry<Int,Planet>::value).toList()
     }
-    
+
 
 }

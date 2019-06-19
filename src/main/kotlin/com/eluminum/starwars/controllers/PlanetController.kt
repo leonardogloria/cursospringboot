@@ -1,6 +1,7 @@
 package com.eluminum.starwars.controllers
 
 import com.eluminum.starwars.model.Planet
+import com.eluminum.starwars.service.PlanetService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
 import org.springframework.web.bind.annotation.*
@@ -9,31 +10,30 @@ import java.util.concurrent.ConcurrentHashMap
 @RestController
 class PlanetController {
     @Autowired
-    lateinit var planets: ConcurrentHashMap<Int,Planet>
+    lateinit var planetService: PlanetService
 
     @GetMapping(value="/planets/{id}")
-    fun getPlanet(@PathVariable id: Int) = planets[id]
+    fun getPlanet(@PathVariable id: Int) = planetService.getById(id)
 
     @GetMapping(value="/planets")
     fun filterByName(@RequestParam(required = false, defaultValue = "") nameFilter: String) =
-            planets.filter {
-                it.value.name.contains(nameFilter, ignoreCase = true) }
-                    .map(Map.Entry<Int,Planet>::value).toList()
+            planetService.search(nameFilter)
+
 
 
     @PostMapping(value = "/planets")
     fun createPlanet(@RequestBody planet: Planet){
-        planets[planet.id] = planet
+        planetService.create(planet)
     }
 
     @DeleteMapping(value= "/planets/{id}")
     fun deletePlanet(@PathVariable id: Int){
-        planets.remove(id)
+        planetService.delete(id)
     }
     @PutMapping(value = "/planets/{id}")
     fun updatePlanet(@PathVariable id: Int, @RequestBody planet: Planet){
-        planets.remove(id)
-        planets[planet.id] = planet
+        planetService.update(id,planet)
+
     }
 
 
