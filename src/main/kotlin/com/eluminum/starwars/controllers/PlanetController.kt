@@ -1,5 +1,6 @@
 package com.eluminum.starwars.controllers
 
+import com.eluminum.starwars.error.PlanetNotFoundException
 import com.eluminum.starwars.model.Planet
 import com.eluminum.starwars.service.PlanetService
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,9 +17,9 @@ class PlanetController {
 
     @GetMapping(value="/planets/{id}")
     fun getPlanet(@PathVariable id: Int) : ResponseEntity<Planet?>{
-        val planet = planetService.getById(id)
-        val status = if(planet == null) HttpStatus.NOT_FOUND else HttpStatus.OK
-        return ResponseEntity(planet,status)
+        val planet = planetService.getById(id) ?: throw PlanetNotFoundException("Planet ${id} not found")
+
+        return ResponseEntity(planet,HttpStatus.OK)
     }
 
     @GetMapping(value="/planets")
